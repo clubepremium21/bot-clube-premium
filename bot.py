@@ -29,6 +29,7 @@ async def clique(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
+
     if query.data == "planos":
 
         texto = """
@@ -58,6 +59,54 @@ Escolha seu plano:
         await query.edit_message_text(
             texto,
             reply_markup=InlineKeyboardMarkup(botoes)
+        )
+
+
+    elif query.data == "mensal":
+
+        await query.edit_message_text(
+            """
+🥉 Plano Mensal
+
+💰 Valor: R$ 12,99
+
+PIX:
+86244512-5d01-47d9-a417-e5197252fab3
+
+Após o pagamento, aguarde a confirmação da liberação do acesso.
+"""
+        )
+
+
+    elif query.data == "trimestral":
+
+        await query.edit_message_text(
+            """
+🥈 Plano Trimestral
+
+💰 Valor: R$ 15,99
+
+PIX:
+86244512-5d01-47d9-a417-e5197252fab3
+
+Após o pagamento, aguarde a confirmação da liberação do acesso.
+"""
+        )
+
+
+    elif query.data == "anual":
+
+        await query.edit_message_text(
+            """
+🥇 Plano Anual
+
+💰 Valor: R$ 29,90
+
+PIX:
+86244512-5d01-47d9-a417-e5197252fab3
+
+Após o pagamento, aguarde a confirmação da liberação do acesso.
+"""
         )
 
 
