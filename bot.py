@@ -3,19 +3,27 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Cont
 
 TOKEN = "8827706497:AAGSvKalbSw5-udm5X7-K8vp-kEGJrZ_oXs"
 
+PIX = "86244512-5d01-47d9-a417-e5197252fab3"
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     texto = """
-🔥 Bem-vindo ao Clube Premium!
+🔥 BEM-VINDO AO CLUBE PREMIUM 🔥
 
-Tenha acesso a conteúdos exclusivos para membros.
+✨ Um espaço exclusivo para membros.
 
-Escolha uma opção:
+Tenha acesso a conteúdos especiais e uma área reservada para assinantes.
+
+🔒 Área privada
+⭐ Conteúdo exclusivo
+💎 Acesso premium
+
+Escolha seu plano abaixo:
 """
 
     botoes = [
-        [InlineKeyboardButton("📚 Ver planos", callback_data="planos")]
+        [InlineKeyboardButton("💎 Ver planos disponíveis", callback_data="planos")]
     ]
 
     await update.message.reply_text(
@@ -33,7 +41,7 @@ async def clique(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "planos":
 
         texto = """
-⭐ Planos do Clube Premium
+💎 PLANOS DE ACESSO PREMIUM
 
 🥉 Mensal
 📅 30 dias
@@ -62,50 +70,82 @@ Escolha seu plano:
         )
 
 
-    elif query.data == "mensal":
+    elif query.data in ["mensal", "trimestral", "anual"]:
+
+        planos = {
+            "mensal": "🥉 ACESSO MENSAL PREMIUM\n\n📅 30 dias\n💰 R$ 12,99",
+            "trimestral": "🥈 ACESSO TRIMESTRAL PREMIUM\n\n📅 90 dias\n💰 R$ 15,99",
+            "anual": "🥇 ACESSO ANUAL PREMIUM\n\n📅 365 dias\n💰 R$ 29,90"
+        }
+
+        texto = f"""
+{planos[query.data]}
+
+
+💳 COMO REALIZAR O PAGAMENTO
+
+1️⃣ Clique em "Copiar código PIX".
+
+2️⃣ Abra o aplicativo do seu banco.
+
+3️⃣ Entre na opção PIX.
+
+4️⃣ Escolha "PIX Copia e Cola".
+
+5️⃣ Cole o código copiado.
+
+6️⃣ Confira o valor e confirme o pagamento.
+
+
+✅ Depois do pagamento, clique em:
+
+🔎 Verificar status
+
+
+Escolha uma opção:
+"""
+
+        botoes = [
+            [InlineKeyboardButton("📋 Copiar código PIX", callback_data="pix")],
+            [InlineKeyboardButton("🔎 Verificar status", callback_data="status")]
+        ]
 
         await query.edit_message_text(
-            """
-🥉 Plano Mensal
+            texto,
+            reply_markup=InlineKeyboardMarkup(botoes)
+        )
 
-💰 Valor: R$ 12,99
 
-PIX:
-86244512-5d01-47d9-a417-e5197252fab3
+    elif query.data == "pix":
 
-Após o pagamento, aguarde a confirmação da liberação do acesso.
+        await query.edit_message_text(
+            f"""
+📋 CÓDIGO PIX
+
+{PIX}
+
+
+Após realizar o pagamento, volte ao bot e clique em:
+
+🔎 Verificar status
+
+
+Obrigado por escolher o Clube Premium.
 """
         )
 
 
-    elif query.data == "trimestral":
+    elif query.data == "status":
 
         await query.edit_message_text(
             """
-🥈 Plano Trimestral
+⏳ STATUS DO PAGAMENTO
 
-💰 Valor: R$ 15,99
+Seu pagamento ainda está aguardando confirmação.
 
-PIX:
-86244512-5d01-47d9-a417-e5197252fab3
+Assim que for confirmado, seu acesso será liberado.
 
-Após o pagamento, aguarde a confirmação da liberação do acesso.
-"""
-        )
-
-
-    elif query.data == "anual":
-
-        await query.edit_message_text(
-            """
-🥇 Plano Anual
-
-💰 Valor: R$ 29,90
-
-PIX:
-86244512-5d01-47d9-a417-e5197252fab3
-
-Após o pagamento, aguarde a confirmação da liberação do acesso.
+Obrigado pela paciência.
 """
         )
 
