@@ -11,7 +11,7 @@ from database import (
 )
 
 
-LINK_GRUPO = "COLOQUE_AQUI_O_LINK_DO_GRUPO"
+LINK_GRUPO = "https://t.me/+gjl7eVe68e9jYzgx"
 
 
 async def enviar_painel_admin(update, context):
@@ -82,7 +82,7 @@ async def aprovar_pagamento(update, context):
 
     query = update.callback_query
     await query.answer()
-
+print("BOTÃO APROVAR FOI CLICADO")
     dados = query.data.split("_")
 
     telegram_id = int(dados[1])
