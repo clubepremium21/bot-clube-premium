@@ -1,9 +1,4 @@
-from telegram import (
-    Update,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup
-)
-
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
 from config import (
@@ -52,21 +47,15 @@ async def inicio(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-
-async def menu_planos(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
+async def menu_planos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
     await query.answer()
 
-
     texto = "💎 PLANOS DISPONÍVEIS\n\n"
 
     botoes = []
-
 
     for chave, plano in PLANOS.items():
 
@@ -85,29 +74,22 @@ async def menu_planos(
             ]
         )
 
-
     await query.edit_message_text(
         texto,
         reply_markup=InlineKeyboardMarkup(botoes)
     )
 
 
-
-async def escolher_plano(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
+async def escolher_plano(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
     await query.answer()
 
-
     plano = query.data.replace(
         "plano_",
         ""
     )
-
 
     atualizar_plano(
         query.from_user.id,
@@ -121,14 +103,24 @@ async def escolher_plano(
 💰 Valor:
 R$ {PLANOS[plano]['valor']}
 
-
 {INSTRUCOES_PIX}
+"""
 
 
-Código PIX:
+    await query.edit_message_text(
+        texto
+    )
+
+
+    await query.message.reply_text(
+        f"""
+💳 CÓDIGO PIX
+
+Copie o código abaixo:
 
 {PIX}
 """
+    )
 
 
     botoes = [
@@ -147,22 +139,18 @@ Código PIX:
     ]
 
 
-    await query.edit_message_text(
-        texto,
+    await query.message.reply_text(
+        "Após realizar o pagamento, envie o comprovante.",
         reply_markup=InlineKeyboardMarkup(botoes)
     )
 
 
 
-async def minha_assinatura(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
+async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
     await query.answer()
-
 
     cliente = buscar_cliente(
         query.from_user.id
@@ -194,12 +182,10 @@ Você ainda não possui cadastro.
 
 
 
-async def receber_comprovante(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
+async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     foto = update.message.photo[-1]
+
 
     salvar_comprovante(
         update.effective_user.id,
@@ -218,10 +204,7 @@ Aguarde a confirmação.
 
 
 
-async def verificar_status(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
+async def verificar_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
