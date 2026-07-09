@@ -145,14 +145,16 @@ async def pedir_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     await query.message.reply_text(
-        """
+    """
 📸 Envie agora uma FOTO do comprovante do PIX.
 
 ⚠️ Envie a imagem completa.
 
 Assim que recebermos, ela ficará aguardando confirmação.
 """
-    )async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
+)
+
+async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
