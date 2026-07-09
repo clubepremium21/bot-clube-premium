@@ -33,13 +33,16 @@ def main():
 
     app = Application.builder().token(TOKEN).build()
 
-    # Comandos
+
+    # COMANDOS
+
     app.add_handler(
         CommandHandler(
             "start",
             inicio
         )
     )
+
 
     app.add_handler(
         CommandHandler(
@@ -48,13 +51,16 @@ def main():
         )
     )
 
-    # Botões
+
+    # MENU PLANOS
+
     app.add_handler(
         CallbackQueryHandler(
             menu_planos,
             pattern="^planos$"
         )
     )
+
 
     app.add_handler(
         CallbackQueryHandler(
@@ -63,12 +69,18 @@ def main():
         )
     )
 
+
+    # ASSINATURA
+
     app.add_handler(
         CallbackQueryHandler(
             minha_assinatura,
             pattern="^minha_assinatura$"
         )
     )
+
+
+    # ENVIO DE COMPROVANTE
 
     app.add_handler(
         CallbackQueryHandler(
@@ -77,15 +89,18 @@ def main():
         )
     )
 
+
+    # STATUS
+
     app.add_handler(
-        CallbackQueryHandler(
-                app.add_handler(
         CallbackQueryHandler(
             verificar_status,
             pattern="^status$"
         )
     )
 
+
+    # APROVAR / RECUSAR PAGAMENTO
 
     app.add_handler(
         CallbackQueryHandler(
@@ -103,24 +118,21 @@ def main():
     )
 
 
-    # Recebe fotos (comprovantes)
+    # RECEBER FOTO DO COMPROVANTE
+
     app.add_handler(
         MessageHandler(
             filters.PHOTO,
             receber_comprovante
         )
     )
-    # Recebe fotos (comprovantes)
-    app.add_handler(
-        MessageHandler(
-            filters.PHOTO,
-            receber_comprovante
-        )
-    )
+
 
     print("✅ Bot iniciado!")
 
+
     app.run_polling()
+
 
 
 if __name__ == "__main__":
