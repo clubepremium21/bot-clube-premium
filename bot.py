@@ -20,7 +20,11 @@ from handlers import (
     verificar_status
 )
 
-from admin import enviar_painel_admin
+from admin import (
+    enviar_painel_admin,
+    aprovar_pagamento,
+    recusar_pagamento
+)
 
 
 def main():
@@ -79,7 +83,20 @@ def main():
             pattern="^status$"
         )
     )
+app.add_handler(
+    CallbackQueryHandler(
+        aprovar_pagamento,
+        pattern="^aprovar_"
+    )
+)
 
+
+app.add_handler(
+    CallbackQueryHandler(
+        recusar_pagamento,
+        pattern="^recusar_"
+    )
+)
     # Recebe fotos (comprovantes)
     app.add_handler(
         MessageHandler(
