@@ -16,7 +16,35 @@ from database import (
 )
 
 
-async def inicio(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    foto = update.message.photo[-1]
+
+    salvar_comprovante(
+        update.effective_user.id,
+        foto.file_id,
+        str(update.message.date)
+    )
+
+    botoes = [
+        [
+            InlineKeyboardButton(
+                "🔎 Verificar status",
+                callback_data="status"
+            )
+        ]
+    ]
+
+    await update.message.reply_text(
+        """
+✅ Comprovante enviado!
+
+⏳ Seu pagamento está aguardando confirmação.
+
+Você pode acompanhar o status abaixo:
+""",
+        reply_markup=InlineKeyboardMarkup(botoes)
+    )
 
     usuario = update.effective_user
 
