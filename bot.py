@@ -15,6 +15,7 @@ from handlers import (
     menu_planos,
     escolher_plano,
     minha_assinatura,
+    pedir_comprovante,
     receber_comprovante,
     verificar_status
 )
@@ -24,22 +25,17 @@ from admin import enviar_painel_admin
 
 def main():
 
-    # cria o banco caso ainda não exista
     criar_banco()
-
 
     app = Application.builder().token(TOKEN).build()
 
-
-    # comandos
-
+    # Comandos
     app.add_handler(
         CommandHandler(
             "start",
             inicio
         )
     )
-
 
     app.add_handler(
         CommandHandler(
@@ -48,16 +44,13 @@ def main():
         )
     )
 
-
-    # botões
-
+    # Botões
     app.add_handler(
         CallbackQueryHandler(
             menu_planos,
             pattern="^planos$"
         )
     )
-
 
     app.add_handler(
         CallbackQueryHandler(
@@ -66,7 +59,6 @@ def main():
         )
     )
 
-
     app.add_handler(
         CallbackQueryHandler(
             minha_assinatura,
@@ -74,6 +66,12 @@ def main():
         )
     )
 
+    app.add_handler(
+        CallbackQueryHandler(
+            pedir_comprovante,
+            pattern="^comprovante$"
+        )
+    )
 
     app.add_handler(
         CallbackQueryHandler(
@@ -82,9 +80,7 @@ def main():
         )
     )
 
-
-    # comprovante (imagem)
-
+    # Recebe fotos (comprovantes)
     app.add_handler(
         MessageHandler(
             filters.PHOTO,
@@ -92,12 +88,9 @@ def main():
         )
     )
 
-
-    print("Bot iniciado!")
-
+    print("✅ Bot iniciado!")
 
     app.run_polling()
-
 
 
 if __name__ == "__main__":
