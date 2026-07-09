@@ -5,7 +5,8 @@ from config import (
     MENSAGEM_BEM_VINDO,
     PLANOS,
     PIX,
-    INSTRUCOES_PIX
+    INSTRUCOES_PIX,
+    ADMIN_ID
 )
 
 from database import (
@@ -204,7 +205,42 @@ async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE
         str(update.message.date)
     )
 
-    botoes = [
+
+    botoes_admin = [
+        [
+            InlineKeyboardButton(
+                "✅ Aprovar",
+                callback_data=f"aprovar_{update.effective_user.id}"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "❌ Recusar",
+                callback_data=f"recusar_{update.effective_user.id}"
+            )
+        ]
+    ]
+
+
+    await context.bot.send_photo(
+        chat_id=ADMIN_ID,
+        photo=foto.file_id,
+        caption=f"""
+📸 NOVO COMPROVANTE
+
+👤 Cliente:
+{update.effective_user.first_name}
+
+🆔 ID:
+{update.effective_user.id}
+
+Aguardando confirmação.
+""",
+        reply_markup=InlineKeyboardMarkup(botoes_admin)
+    )
+
+
+    botoes_cliente = [
         [
             InlineKeyboardButton(
                 "🔎 Verificar status",
@@ -213,17 +249,16 @@ async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE
         ]
     ]
 
+
     await update.message.reply_text(
         """
 ✅ Comprovante recebido com sucesso!
 
-⏳ Seu pagamento foi enviado para análise.
+⏳ Seu pagamento está em análise.
 
-Normalmente a confirmação acontece em poucos minutos.
-
-Você pode acompanhar o andamento clicando no botão abaixo.
+Você será liberado assim que a confirmação for concluída.
 """,
-        reply_markup=InlineKeyboardMarkup(botoes)
+        reply_markup=InlineKeyboardMarkup(botoes_cliente)
     )
 
 
