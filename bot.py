@@ -79,24 +79,37 @@ def main():
 
     app.add_handler(
         CallbackQueryHandler(
+                app.add_handler(
+        CallbackQueryHandler(
             verificar_status,
             pattern="^status$"
         )
     )
-app.add_handler(
-    CallbackQueryHandler(
-        aprovar_pagamento,
-        pattern="^aprovar_"
-    )
-)
 
 
-app.add_handler(
-    CallbackQueryHandler(
-        recusar_pagamento,
-        pattern="^recusar_"
+    app.add_handler(
+        CallbackQueryHandler(
+            aprovar_pagamento,
+            pattern="^aprovar_"
+        )
     )
-)
+
+
+    app.add_handler(
+        CallbackQueryHandler(
+            recusar_pagamento,
+            pattern="^recusar_"
+        )
+    )
+
+
+    # Recebe fotos (comprovantes)
+    app.add_handler(
+        MessageHandler(
+            filters.PHOTO,
+            receber_comprovante
+        )
+    )
     # Recebe fotos (comprovantes)
     app.add_handler(
         MessageHandler(
