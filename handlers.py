@@ -16,35 +16,7 @@ from database import (
 )
 
 
-async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    foto = update.message.photo[-1]
-
-    salvar_comprovante(
-        update.effective_user.id,
-        foto.file_id,
-        str(update.message.date)
-    )
-
-    botoes = [
-        [
-            InlineKeyboardButton(
-                "🔎 Verificar status",
-                callback_data="status"
-            )
-        ]
-    ]
-
-    await update.message.reply_text(
-        """
-✅ Comprovante enviado!
-
-⏳ Seu pagamento está aguardando confirmação.
-
-Você pode acompanhar o status abaixo:
-""",
-        reply_markup=InlineKeyboardMarkup(botoes)
-    )
+async def inicio(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     usuario = update.effective_user
 
@@ -78,7 +50,6 @@ Você pode acompanhar o status abaixo:
 async def menu_planos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
-
     await query.answer()
 
     texto = "💎 PLANOS DISPONÍVEIS\n\n"
@@ -124,7 +95,6 @@ async def escolher_plano(update: Update, context: ContextTypes.DEFAULT_TYPE):
         plano
     )
 
-
     texto = f"""
 {PLANOS[plano]['nome']}
 
@@ -134,22 +104,17 @@ R$ {PLANOS[plano]['valor']}
 {INSTRUCOES_PIX}
 """
 
-
-    await query.edit_message_text(
-        texto
-    )
-
+    await query.edit_message_text(texto)
 
     await query.message.reply_text(
         f"""
 💳 CÓDIGO PIX
 
-Copie o código abaixo:
+Copie a chave abaixo:
 
 {PIX}
 """
     )
-
 
     botoes = [
         [
@@ -160,21 +125,34 @@ Copie o código abaixo:
         ],
         [
             InlineKeyboardButton(
-                "🔎 Ver status",
+                "🔎 Verificar status",
                 callback_data="status"
             )
         ]
     ]
 
-
     await query.message.reply_text(
-        "Após realizar o pagamento, envie o comprovante.",
+        "Após realizar o pagamento, clique em **📸 Enviar comprovante**.",
+        parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(botoes)
     )
 
 
+async def pedir_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+
+    await query.answer()
+
+    await query.message.reply_text(
+        """
+📸 Envie agora uma FOTO do comprovante do PIX.
+
+⚠️ Envie a imagem completa.
+
+Assim que recebermos, ela ficará aguardando confirmação.
+"""
+    )async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
 
@@ -184,36 +162,39 @@ async def minha_assinatura(update: Update, context: ContextTypes.DEFAULT_TYPE):
         query.from_user.id
     )
 
-
     if cliente:
+
+        plano = cliente[5] if cliente[5] else "Nenhum"
+
+        status = cliente[6] if cliente[6] else "INATIVO"
 
         texto = f"""
 👤 Minha assinatura
 
-Plano:
-{cliente[5]}
+📦 Plano: {plano}
 
-Status:
-{cliente[6]}
+📋 Status: {status}
 """
 
     else:
 
         texto = """
-Você ainda não possui cadastro.
+❌ Você ainda não possui assinatura.
 """
 
-
-    await query.edit_message_text(
-        texto
-    )
-
+    await query.edit_message_text(texto)
 
 
 async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    foto = update.message.photo[-1]
+    if not update.message.photo:
 
+        await update.message.reply_text(
+            "❌ Envie uma FOTO do comprovante."
+        )
+        return
+
+    foto = update.message.photo[-1]
 
     salvar_comprovante(
         update.effective_user.id,
@@ -221,15 +202,27 @@ async def receber_comprovante(update: Update, context: ContextTypes.DEFAULT_TYPE
         str(update.message.date)
     )
 
+    botoes = [
+        [
+            InlineKeyboardButton(
+                "🔎 Verificar status",
+                callback_data="status"
+            )
+        ]
+    ]
 
     await update.message.reply_text(
         """
-✅ Comprovante recebido.
+✅ Comprovante recebido com sucesso!
 
-Aguarde a confirmação.
-"""
+⏳ Seu pagamento foi enviado para análise.
+
+Normalmente a confirmação acontece em poucos minutos.
+
+Você pode acompanhar o andamento clicando no botão abaixo.
+""",
+        reply_markup=InlineKeyboardMarkup(botoes)
     )
-
 
 
 async def verificar_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -238,25 +231,28 @@ async def verificar_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.answer()
 
-
     cliente = buscar_cliente(
         query.from_user.id
     )
 
-
     if cliente and cliente[6] == "ATIVO":
 
-        texto = """
+        texto = f"""
+🎉 Pagamento aprovado!
+
 ✅ Sua assinatura está ativa.
+
+Aproveite todo o conteúdo exclusivo.
 """
 
     else:
 
         texto = """
-⏳ Pagamento aguardando confirmação.
+⏳ Ainda não identificamos a aprovação do pagamento.
+
+Caso você já tenha enviado o comprovante, aguarde alguns minutos enquanto realizamos a conferência.
+
+Assim que aprovado, seu acesso será liberado automaticamente.
 """
 
-
-    await query.edit_message_text(
-        texto
-    )
+    await query.edit_message_text(texto)
