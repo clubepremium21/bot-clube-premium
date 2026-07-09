@@ -75,13 +75,9 @@ def atualizar_plano(telegram_id, plano):
     cursor = conn.cursor()
 
     cursor.execute("""
-
     UPDATE clientes
-
     SET plano=?
-
     WHERE telegram_id=?
-
     """, (plano, telegram_id))
 
     conn.commit()
@@ -94,13 +90,10 @@ def salvar_comprovante(telegram_id, file_id, data):
     cursor = conn.cursor()
 
     cursor.execute("""
-
     INSERT INTO comprovantes
-
     (telegram_id,file_id,data_envio,status)
 
     VALUES(?,?,?,?)
-
     """, (telegram_id, file_id, data, "AGUARDANDO"))
 
     conn.commit()
@@ -113,13 +106,9 @@ def alterar_status(telegram_id, status):
     cursor = conn.cursor()
 
     cursor.execute("""
-
     UPDATE clientes
-
     SET status=?
-
     WHERE telegram_id=?
-
     """, (status, telegram_id))
 
     conn.commit()
@@ -132,13 +121,9 @@ def buscar_cliente(telegram_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-
     SELECT *
-
     FROM clientes
-
     WHERE telegram_id=?
-
     """, (telegram_id,))
 
     cliente = cursor.fetchone()
@@ -151,15 +136,11 @@ def buscar_cliente(telegram_id):
 def listar_clientes():
 
     conn = conectar()
-
     cursor = conn.cursor()
 
     cursor.execute("""
-
     SELECT *
-
     FROM clientes
-
     """)
 
     clientes = cursor.fetchall()
@@ -167,3 +148,36 @@ def listar_clientes():
     conn.close()
 
     return clientes
+
+
+def buscar_comprovantes_pendentes():
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT *
+    FROM comprovantes
+    WHERE status='AGUARDANDO'
+    """)
+
+    comprovantes = cursor.fetchall()
+
+    conn.close()
+
+    return comprovantes
+
+
+def alterar_status_comprovante(id_comprovante, status):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    UPDATE comprovantes
+    SET status=?
+    WHERE id=?
+    """, (status, id_comprovante))
+
+    conn.commit()
+    conn.close()
