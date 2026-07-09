@@ -9,7 +9,7 @@ from telegram.ext import (
 )
 
 
-TOKEN = "8827706497:AAGSvKalbSw5-udm5X7-K8vp-kEGJrZ_oXs"
+TOKEN = "8827706497:AAFWnSccUhwyVCnNuRoMLQIn1htLzFhKU2Y"
 
 SEU_ID = 8129683840
 
